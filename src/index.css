@@ -1,3 +1,22 @@
-div {
-  background-color: blue;
+.grid {
+  width: 700px;
+  height: 700px;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+
+.row {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  margin-bottom: 2px;
+}
+
+.square {
+  height: 100%;
+  width: 100%;
+  flex: 1;
+  outline: black solid 2px;
+  margin-left: 2px;
 }
