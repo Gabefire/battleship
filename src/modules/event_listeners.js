@@ -50,18 +50,20 @@ export default function placeShipIndicator(ship, gameboard, dir) {
 
 export function placeShipListener(ship, gameBoard, dir) {
   const squares = document.querySelectorAll(".square");
+  function innerListener(e) {
+    const coord = e.target.id.split("-");
+    const row = +coord[0];
+    const col = +coord[1];
+    const results = gameBoard.placeShip(row, col, dir, ship);
+    if (!results) {
+      console.log("train was not placed");
+      return;
+    }
+    console.log("train was placed");
+  }
 
   squares.forEach((square) => {
-    square.addEventListener("click", (e) => {
-      const coord = e.target.id.split("-");
-      const row = +coord[0];
-      const col = +coord[1];
-      const results = gameBoard.placeShip(row, col, dir, ship);
-      if (!results) {
-        console.log("train was not placed");
-        return;
-      }
-      console.log("train was placed");
-    });
+    square.removeEventListener("click", innerListener);
+    square.addEventListener("click", innerListener);
   });
 }

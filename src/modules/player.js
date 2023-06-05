@@ -1,5 +1,5 @@
 import createBoard from "./DOMmethods";
-import placeShipIndicator, { placeShipListener } from "./event_listeners";
+import placeShipIndicator from "./event_listeners";
 import Gameboard from "./gameboard";
 import Ship from "./ship";
 
@@ -8,17 +8,19 @@ export default class Player {
     this.gameBoard = new Gameboard();
     let maxShipSlots = 5;
     const playerShipArray = [];
-    for (let i = 0; i < 5; i += 1) {
+    for (let i = 0; i < 4; i += 1) {
       const ship = new Ship(maxShipSlots);
       playerShipArray.push(ship);
       maxShipSlots -= 1;
     }
+    const ship4 = new Ship(3);
+    playerShipArray.splice(2, 0, ship4);
     this.shipArray = playerShipArray;
-  }
-
-  buildGameboard() {
-    createBoard("large", this.gameBoard.squareArray);
-    const possibleDir = [
+    this.currentShipIndex = 0;
+    this.currentShip = this.shipArray[this.currentShipIndex];
+    this.boundInnerListener = this.innerListener.bind(this);
+    this.boundShiftDir = this.shiftDir.bind(this);
+    this.possibleDir = [
       // right
       [0, 1],
       // up
@@ -28,59 +30,60 @@ export default class Player {
       // down
       [-1, 0],
     ];
+    this.currentDirIndex = 0;
+    this.currentDir = this.possibleDir[this.currentDirIndex];
+  }
 
-    for (let i = 0; i < this.shipArray.length; i += 1) {
-      let nextSelection = false;
-      while (!nextSelection) {
-        let currentDirIndex = 0;
-        let currentDir = possibleDir[currentDirIndex];
-        let currentShip = this.shipArray[0];
-        const tempGameBoard = this.gameBoard;
-        function shiftDir(e) {
-          const { keyCode } = e;
-          if (keyCode === 37) {
-            currentDirIndex -= 1;
-            if (currentDirIndex < 0) {
-              currentDirIndex = 3;
-            }
-          }
-          if (keyCode === 39) {
-            currentDirIndex += 1;
-            if (currentDirIndex > 3) {
-              currentDirIndex = 0;
-            }
-          }
-          currentDir = possibleDir[currentDirIndex];
-          const grid = document.querySelector(".grid");
-          grid.innerHTML = "";
-          const { squareArray } = tempGameBoard;
-          createBoard("large", squareArray);
-          placeShipIndicator(currentShip, tempGameBoard, currentDir);
-        }
-        document.onkeydown = shiftDir;
-        const squares = document.querySelectorAll(".square");
-        const dir = currentDir;
-        squares.forEach((square) => {
-          square.addEventListener("click", (e) => {
-            const coord = e.target.id.split("-");
-            const row = +coord[0];
-            const col = +coord[1];
-            const results = this.gameBoard.placeShip(
-              row,
-              col,
-              currentDir,
-              this.shipArray[0]
-            );
-            if (!results) {
-              console.log("train was not placed");
-              return;
-            }
-            console.log("train was placed");
-          });
-        });
+  innerListener(e) {
+    const coord = e.target.id.split("-");
+    const row = +coord[0];
+    const col = +coord[1];
+    const results = this.gameBoard.placeShip(
+      row,
+      col,
+      this.currentDir,
+      this.currentShip
+    );
+    if (!results) {
+      return;
+    }
+    this.currentShipIndex += 1;
+    this.currentShip = this.shipArray[this.currentShipIndex];
+    if (this.currentShipIndex > this.shipArray.length - 1) {
+      createBoard("large", this.gameBoard.squareArray);
+      console.log(this.gameBoard.squareArray);
+      return;
+    }
+    this.buildGameboard();
+  }
 
-        placeShipIndicator(this.shipArray[i], this.gameBoard, currentDir);
+  shiftDir(e) {
+    const { keyCode } = e;
+    if (keyCode === 37) {
+      this.currentDirIndex -= 1;
+      if (this.currentDirIndex < 0) {
+        this.currentDirIndex = 3;
       }
     }
+    if (keyCode === 39) {
+      this.currentDirIndex += 1;
+      if (this.currentDirIndex > 3) {
+        this.currentDirIndex = 0;
+      }
+    }
+    this.currentDir = this.possibleDir[this.currentDirIndex];
+    this.buildGameboard();
+  }
+
+  buildGameboard() {
+    const { squareArray } = this.gameBoard;
+    createBoard("large", squareArray);
+    placeShipIndicator(this.currentShip, this.gameBoard, this.currentDir);
+    document.onkeydown = this.boundShiftDir;
+    const squares = document.querySelectorAll(".square");
+    squares.forEach((square) => {
+      square.removeEventListener("click", this.boundInnerListener);
+      square.addEventListener("click", this.boundInnerListener);
+    });
   }
 }

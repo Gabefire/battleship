@@ -1,5 +1,6 @@
 export default function createBoard(size, squareArray) {
   const grid = document.querySelector(".grid");
+  grid.innerHTML = "";
   grid.id = `${size} grid`;
 
   for (let i = 9; i >= 0; i -= 1) {
