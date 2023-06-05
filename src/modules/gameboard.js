@@ -3,21 +3,11 @@ import Square from "./square";
 export default class Gameboard {
   constructor() {
     const squareArray = [];
-    // const grid = document.querySelector(".grid");
-
     for (let i = 9; i >= 0; i -= 1) {
-      // const row = document.createElement("div");
-      // row.id = `${i}`;
-      // row.className = "row";
-      // grid.appendChild(row);
       const rowArray = [];
       for (let x = 0; x < 10; x += 1) {
-        // const div = document.createElement("div");
         const square = new Square(i, x);
         rowArray.push(square);
-        // div.id = `${i}-${x}`;
-        // div.className = "square";
-        // row.appendChild(div);
       }
       squareArray.unshift(rowArray);
     }
@@ -26,19 +16,43 @@ export default class Gameboard {
     this.missedAttacks = 0;
   }
 
-  placeShip(row, col, dir, ship) {
-    let x = row;
-    let y = col;
+  checkValidMove(row, col, dir, ship) {
     if (
-      row + ship.length * dir[0] > 9 ||
-      row + ship.length * dir[0] < 0 ||
-      col + ship.length * dir[1] > 9 ||
-      col + ship.length * dir[1] < 0
+      row + (ship.length - 1) * dir[0] > 9 ||
+      row + (ship.length - 1) * dir[0] < 0 ||
+      col + (ship.length - 1) * dir[1] > 9 ||
+      col + (ship.length - 1) * dir[1] < 0
     ) {
       return false;
     }
+    if (dir[0] === 1) {
+      for (let i = row; i < ship.length + row; i += 1) {
+        if (this.squareArray[i][col].shipPlaced !== null) return false;
+      }
+    }
+    if (dir[0] === -1) {
+      for (let i = row; i > row - ship.length; i -= 1) {
+        if (this.squareArray[i][col].shipPlaced !== null) return false;
+      }
+    }
+    if (dir[1] === 1) {
+      for (let i = col; i < ship.length + col; i += 1) {
+        if (this.squareArray[row][i].shipPlaced !== null) return false;
+      }
+    }
+    if (dir[1] === -1) {
+      for (let i = col; i > col - ship.length; i -= 1) {
+        if (this.squareArray[row][i].shipPlaced !== null) return false;
+      }
+    }
+    return true;
+  }
 
-    for (let i = 0; i < 3; i += 1) {
+  placeShip(row, col, dir, ship) {
+    let x = row;
+    let y = col;
+    if (!this.checkValidMove(row, col, dir, ship)) return false;
+    for (let i = 0; i < ship.length; i += 1) {
       const square = this.squareArray[x][y];
       square.shipPlaced = ship;
       x += dir[0];
@@ -49,6 +63,7 @@ export default class Gameboard {
   }
 
   receiveAttack(row, col) {
+    // true if hit, invalid if spot already been targeted, false if not hit on ship
     const square = this.squareArray[row][col];
     if (square.hit === true) {
       return "invalid";

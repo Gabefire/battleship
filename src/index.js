@@ -1,6 +1,7 @@
 import css from "./index.css";
 import Gameboard from "./modules/gameboard";
-import createBoard from "./modules/DOMmethods";
+import Player from "./modules/player";
+import Ship from "./modules/ship";
 
-const gameboard = new Gameboard();
-createBoard();
+const player = new Player();
+player.buildGameboard();
