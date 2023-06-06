@@ -14,6 +14,7 @@ export default class Gameboard {
     this.squareArray = squareArray;
     this.shipArray = [];
     this.missedAttacks = 0;
+    this.previousMoves = [];
   }
 
   checkValidMove(row, col, dir, ship) {
@@ -71,10 +72,13 @@ export default class Gameboard {
     square.hit = true;
     if (square.shipPlaced !== null) {
       square.shipPlaced.hit();
-      return true;
+      if (square.shipPlaced.isSunk()) {
+        return "Ship Sunk!";
+      }
+      return "Hit!";
     }
     this.missedAttacks += 1;
-    return false;
+    return "Miss!";
   }
 
   checkResults() {

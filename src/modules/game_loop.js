@@ -1,13 +1,8 @@
-import createBoard from "./DOMmethods";
 import Gameboard from "./gameboard";
 import Ship from "./ship";
+import { createBoard, updateSquare } from "./DOMmethods";
 
-function buildComputerGameBoard(
-  playerGameBoard,
-  shipArray,
-  gameBoard,
-  currentShipIndex = 0
-) {
+function buildComputerGameBoard(shipArray, gameBoard, currentShipIndex = 0) {
   if (currentShipIndex > shipArray.length - 1) {
     return;
   }
@@ -35,7 +30,17 @@ function buildComputerGameBoard(
   buildComputerGameBoard(shipArray, gameBoard, shipIndex);
 }
 
-function buildComputer(playerGameBoard) {
+function getComputersTurn(computerGameBoard) {
+  const row = Math.floor(Math.random() * 10);
+  const col = Math.floor(Math.random() * 10);
+  if ([row, col] in computerGameBoard.previousMoves) {
+    getComputersTurn(computerGameBoard);
+  }
+  computerGameBoard.previousMoves.push([row, col]);
+  return [row, col];
+}
+
+export default function startGame(playerGameBoard) {
   const computerGameBoard = new Gameboard();
   let maxShipSlots = 5;
   const computerShipArray = [];
@@ -46,10 +51,7 @@ function buildComputer(playerGameBoard) {
   }
   const ship4 = new Ship(3);
   computerShipArray.splice(2, 0, ship4);
-  buildComputerGameBoard(playerGameBoard, computerShipArray, computerGameBoard);
-}
-
-export default function startGame(playerGameBoard) {
+  buildComputerGameBoard(computerShipArray, computerGameBoard);
   createBoard("large", computerGameBoard.squareArray, false);
   createBoard("small", playerGameBoard.squareArray);
   let gameOver = false;
@@ -61,9 +63,31 @@ export default function startGame(playerGameBoard) {
         return;
       }
       const coord = e.target.id.split("-");
-      const row = +coord[0];
-      const col = +coord[1];
-      if (!playerGameBoard.checkValidMove(row, col, dir, ship)) return;
+      const row = +coord[1];
+      const col = +coord[2];
+      if ([row, col] in playerGameBoard.previousMoves) {
+        // changeStatus("Square already hit")
+        return;
+      }
+      playerGameBoard.previousMoves.push([row, col]);
+      let result = computerGameBoard.receiveAttack(row, col);
+      updateSquare("large", row, col, result);
+      // changeStatus(result);
+      gameOver = computerGameBoard.checkResults();
+      if (gameOver) {
+        // displayWinner(playersTurn);
+        return;
+      }
+      playersTurn = false;
+      const computerCoord = getComputersTurn(computerGameBoard);
+      result = playerGameBoard.receiveAttack(...computerCoord);
+      updateSquare("small", ...computerCoord, result);
+      gameOver = computerGameBoard.checkResults();
+      if (gameOver) {
+        // displayWinner(playersTurn);
+        return;
+      }
+      playersTurn = true;
     });
   });
 }

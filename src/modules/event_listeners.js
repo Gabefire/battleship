@@ -5,33 +5,33 @@ export default function placeShipIndicator(ship, gameBoard, dir) {
   squares.forEach((square) => {
     square.addEventListener("mouseover", (e) => {
       const coord = e.target.id.split("-");
-      const row = +coord[0];
-      const col = +coord[1];
+      const row = +coord[1];
+      const col = +coord[2];
       if (!gameBoard.checkValidMove(row, col, dir, ship)) return;
       if (dir[0] === 1) {
         for (let i = row; i < ship.length + row; i += 1) {
-          const box = document.getElementById(`${i}-${col}`);
+          const box = document.getElementById(`large-${i}-${col}`);
           box.style.backgroundColor = "lightgrey";
           selection.push(box);
         }
       }
       if (dir[0] === -1) {
         for (let i = row; i > row - ship.length; i -= 1) {
-          const box = document.getElementById(`${i}-${col}`);
+          const box = document.getElementById(`large-${i}-${col}`);
           box.style.backgroundColor = "lightgrey";
           selection.push(box);
         }
       }
       if (dir[1] === 1) {
         for (let i = col; i < ship.length + col; i += 1) {
-          const box = document.getElementById(`${row}-${i}`);
+          const box = document.getElementById(`large-${row}-${i}`);
           box.style.backgroundColor = "lightgrey";
           selection.push(box);
         }
       }
       if (dir[1] === -1) {
         for (let i = col; i > col - ship.length; i -= 1) {
-          const box = document.getElementById(`${row}-${i}`);
+          const box = document.getElementById(`large-${row}-${i}`);
           box.style.backgroundColor = "lightgrey";
           selection.push(box);
         }

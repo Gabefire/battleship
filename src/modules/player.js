@@ -1,4 +1,4 @@
-import createBoard from "./DOMmethods";
+import { createBoard } from "./DOMmethods";
 import placeShipIndicator from "./event_listeners";
 import Gameboard from "./gameboard";
 import Ship from "./ship";
@@ -37,8 +37,8 @@ export default class Player {
 
   placeShipListener(e) {
     const coord = e.target.id.split("-");
-    const row = +coord[0];
-    const col = +coord[1];
+    const row = +coord[1];
+    const col = +coord[2];
     const results = this.gameBoard.placeShip(
       row,
       col,
