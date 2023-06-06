@@ -8,11 +8,17 @@
     <script src="./dist/bundle.js" defer></script>
   </head>
   <body>
-    <div class="maincontent">
+    <div class="main-content">
       <h1>Battleship</h1>
-      <h3 class="status"></h3>
+      <h3 class="status-ship"></h3>
       <div class="grid" id="large-grid"></div>
     </div>
-    <div class="grid" id="small-grid"></div>
+    <div class="side-bar">
+      <div class="grid" id="small-grid"></div>
+      <h1 class="status"></h1>
+      <button class="reset" onClick="window.location.reload();">
+        Play Again?
+      </button>
+    </div>
   </body>
 </html>

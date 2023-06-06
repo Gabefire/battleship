@@ -15,6 +15,9 @@ export default class Gameboard {
     this.shipArray = [];
     this.missedAttacks = 0;
     this.previousMoves = [];
+    this.previousHits = [];
+    this.previousDir = null;
+    this.nextMove = null;
   }
 
   checkValidMove(row, col, dir, ship) {
@@ -67,7 +70,7 @@ export default class Gameboard {
     // true if hit, invalid if spot already been targeted, false if not hit on ship
     const square = this.squareArray[row][col];
     if (square.hit === true) {
-      return "invalid";
+      return "Invalid!";
     }
     square.hit = true;
     if (square.shipPlaced !== null) {

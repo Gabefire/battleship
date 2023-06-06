@@ -1,6 +1,10 @@
 export function createBoard(size, squareArray, displayShip = true) {
   const grid = document.querySelector(`#${size}-grid`);
+  const sideBar = document.querySelector(".side-bar");
   grid.innerHTML = "";
+  if (size === "small") {
+    sideBar.style.display = "flex";
+  }
 
   for (let i = 9; i >= 0; i -= 1) {
     const row = document.createElement("div");
@@ -40,4 +44,43 @@ export function updateSquare(size, row, col, result) {
   }
 }
 
-// export function placeShip(length) {}
+export function changeShipText(shipIndex) {
+  const statusShip = document.querySelector(".status-ship");
+  let text = shipIndex;
+  switch (shipIndex) {
+    case 0:
+      text = "Place Carrier";
+      break;
+    case 1:
+      text = "Place Battleship";
+      break;
+    case 2:
+      text = "Place Cruiser";
+      break;
+    case 3:
+      text = "Place Submarine";
+      break;
+    case 4:
+      text = "Place Destroyer";
+      break;
+    default:
+      break;
+  }
+  statusShip.textContent = text;
+}
+
+export function changeStatus(result) {
+  const status = document.querySelector(".status");
+  status.textContent = result;
+}
+
+export function displayWinner(playersTurn) {
+  const status = document.querySelector(".status");
+  const resetButton = document.querySelector(".reset");
+  if (playersTurn) {
+    status.textContent = "You won!";
+  } else {
+    status.textContent = "Computer won!";
+  }
+  resetButton.visibility = "visible";
+}

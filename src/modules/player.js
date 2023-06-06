@@ -1,4 +1,4 @@
-import { createBoard } from "./DOMmethods";
+import { createBoard, changeShipText } from "./DOMmethods";
 import placeShipIndicator from "./event_listeners";
 import Gameboard from "./gameboard";
 import Ship from "./ship";
@@ -51,10 +51,11 @@ export default class Player {
     this.currentShipIndex += 1;
     if (this.currentShipIndex > this.shipArray.length - 1) {
       startGame(this.gameBoard);
+      changeShipText("");
       return;
     }
+    changeShipText(this.currentShipIndex);
     this.currentShip = this.shipArray[this.currentShipIndex];
-
     this.buildGameBoard();
   }
 
@@ -80,6 +81,7 @@ export default class Player {
     const { squareArray } = this.gameBoard;
     createBoard("large", squareArray);
     placeShipIndicator(this.currentShip, this.gameBoard, this.currentDir);
+    changeShipText(this.currentShipIndex);
     document.onkeydown = this.boundedShiftDir;
     const squares = document.querySelectorAll(".square");
     squares.forEach((square) => {

@@ -1,21 +1,27 @@
 import Gameboard from "./gameboard";
 import Ship from "./ship";
-import { createBoard, updateSquare } from "./DOMmethods";
+import {
+  createBoard,
+  updateSquare,
+  changeStatus,
+  displayWinner,
+} from "./DOMmethods";
+
+const possibleDir = [
+  // right
+  [0, 1],
+  // up
+  [1, 0],
+  // left
+  [0, -1],
+  // down
+  [-1, 0],
+];
 
 function buildComputerGameBoard(shipArray, gameBoard, currentShipIndex = 0) {
   if (currentShipIndex > shipArray.length - 1) {
     return;
   }
-  const possibleDir = [
-    // right
-    [0, 1],
-    // up
-    [1, 0],
-    // left
-    [0, -1],
-    // down
-    [-1, 0],
-  ];
   const currentShip = shipArray[currentShipIndex];
   let results = false;
   while (!results) {
@@ -38,6 +44,33 @@ function getComputersTurn(computerGameBoard) {
   }
   computerGameBoard.previousMoves.push([row, col]);
   return [row, col];
+}
+
+function computerAdjacentSquare(computerGameBoard, x, y, result) {
+  const gameBoard = computerGameBoard;
+  if (result === "Hit!" && gameBoard.previousHits.length !== 0) {
+    const currentDir = gameBoard.previousDir;
+    const row = x + currentDir[0];
+    const col = y + currentDir[1];
+    gameBoard.nextMove = [row, col];
+  }
+  if (result === "Miss!" && gameBoard.previousHits.length > 1) {
+    const coords = gameBoard.previousHits;
+    const currentDir = gameBoard.previousDir;
+    const row = x - currentDir[0];
+    const col = y - currentDir[1];
+    gameBoard.nextMove = [row, col];
+  }
+  let validMove = false;
+  let row = x;
+  let col = y;
+  while (!validMove) {
+    const dir = Math.floor(Math.random() * 4);
+    const currentDir = possibleDir[dir];
+    if (currentDir === computerGameBoard.previousDir) {
+      continue;
+    }
+  }
 }
 
 export default function startGame(playerGameBoard) {
@@ -65,26 +98,28 @@ export default function startGame(playerGameBoard) {
       const coord = e.target.id.split("-");
       const row = +coord[1];
       const col = +coord[2];
-      if ([row, col] in playerGameBoard.previousMoves) {
-        // changeStatus("Square already hit")
+      let result = computerGameBoard.receiveAttack(row, col);
+      if (result === "Invalid!") {
+        changeStatus(result);
         return;
       }
-      playerGameBoard.previousMoves.push([row, col]);
-      let result = computerGameBoard.receiveAttack(row, col);
       updateSquare("large", row, col, result);
-      // changeStatus(result);
+      changeStatus(result);
       gameOver = computerGameBoard.checkResults();
       if (gameOver) {
-        // displayWinner(playersTurn);
+        displayWinner(playersTurn);
         return;
       }
       playersTurn = false;
       const computerCoord = getComputersTurn(computerGameBoard);
       result = playerGameBoard.receiveAttack(...computerCoord);
+      if (result === "Hit!") {
+        computerAdjacentSquare(computerGameBoard, ...computerCoord, result);
+      }
       updateSquare("small", ...computerCoord, result);
       gameOver = computerGameBoard.checkResults();
       if (gameOver) {
-        // displayWinner(playersTurn);
+        displayWinner(playersTurn);
         return;
       }
       playersTurn = true;
