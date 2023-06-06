@@ -1,7 +1,6 @@
-export default function createBoard(size, squareArray) {
-  const grid = document.querySelector(".grid");
+export default function createBoard(size, squareArray, displayShip = true) {
+  const grid = document.querySelector(`#${size}-grid`);
   grid.innerHTML = "";
-  grid.id = `${size} grid`;
 
   for (let i = 9; i >= 0; i -= 1) {
     const row = document.createElement("div");
@@ -17,7 +16,11 @@ export default function createBoard(size, squareArray) {
       const square = squareArray[i][x];
       if (square.shipPlaced !== null && square.hit === true) {
         div.style.backgroundColor = "red";
-      } else if (square.shipPlaced !== null && square.hit === false) {
+      } else if (
+        square.shipPlaced !== null &&
+        square.hit === false &&
+        displayShip
+      ) {
         div.style.backgroundColor = "grey";
       } else if (square.shipPlaced === null && square.hit === true) {
         div.style.backgroundColor = "blue";

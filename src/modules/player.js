@@ -2,6 +2,7 @@ import createBoard from "./DOMmethods";
 import placeShipIndicator from "./event_listeners";
 import Gameboard from "./gameboard";
 import Ship from "./ship";
+import startGame from "./game_loop";
 
 export default class Player {
   constructor() {
@@ -18,8 +19,8 @@ export default class Player {
     this.shipArray = playerShipArray;
     this.currentShipIndex = 0;
     this.currentShip = this.shipArray[this.currentShipIndex];
-    this.boundInnerListener = this.innerListener.bind(this);
-    this.boundShiftDir = this.shiftDir.bind(this);
+    this.boundedPlaceShipListener = this.placeShipListener.bind(this);
+    this.boundedShiftDir = this.shiftDirListener.bind(this);
     this.possibleDir = [
       // right
       [0, 1],
@@ -34,7 +35,7 @@ export default class Player {
     this.currentDir = this.possibleDir[this.currentDirIndex];
   }
 
-  innerListener(e) {
+  placeShipListener(e) {
     const coord = e.target.id.split("-");
     const row = +coord[0];
     const col = +coord[1];
@@ -48,16 +49,16 @@ export default class Player {
       return;
     }
     this.currentShipIndex += 1;
-    this.currentShip = this.shipArray[this.currentShipIndex];
     if (this.currentShipIndex > this.shipArray.length - 1) {
-      createBoard("large", this.gameBoard.squareArray);
-      console.log(this.gameBoard.squareArray);
+      startGame(this.gameBoard);
       return;
     }
-    this.buildGameboard();
+    this.currentShip = this.shipArray[this.currentShipIndex];
+
+    this.buildGameBoard();
   }
 
-  shiftDir(e) {
+  shiftDirListener(e) {
     const { keyCode } = e;
     if (keyCode === 37) {
       this.currentDirIndex -= 1;
@@ -72,18 +73,18 @@ export default class Player {
       }
     }
     this.currentDir = this.possibleDir[this.currentDirIndex];
-    this.buildGameboard();
+    this.buildGameBoard();
   }
 
-  buildGameboard() {
+  buildGameBoard() {
     const { squareArray } = this.gameBoard;
     createBoard("large", squareArray);
     placeShipIndicator(this.currentShip, this.gameBoard, this.currentDir);
-    document.onkeydown = this.boundShiftDir;
+    document.onkeydown = this.boundedShiftDir;
     const squares = document.querySelectorAll(".square");
     squares.forEach((square) => {
-      square.removeEventListener("click", this.boundInnerListener);
-      square.addEventListener("click", this.boundInnerListener);
+      square.removeEventListener("click", this.boundedPlaceShipListener);
+      square.addEventListener("click", this.boundedPlaceShipListener);
     });
   }
 }

@@ -1,6 +1,26 @@
-.grid {
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+body {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  justify-content: space-between;
+}
+
+#large-grid {
   width: 700px;
   height: 700px;
+}
+
+#small-grid {
+  width: 400px;
+  height: 400px;
+}
+
+.grid {
   display: flex;
   flex-direction: column;
   margin: 0;

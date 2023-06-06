@@ -1,4 +1,4 @@
-export default function placeShipIndicator(ship, gameboard, dir) {
+export default function placeShipIndicator(ship, gameBoard, dir) {
   const squares = document.querySelectorAll(".square");
   let selection = [];
 
@@ -7,7 +7,7 @@ export default function placeShipIndicator(ship, gameboard, dir) {
       const coord = e.target.id.split("-");
       const row = +coord[0];
       const col = +coord[1];
-      if (!gameboard.checkValidMove(row, col, dir, ship)) return;
+      if (!gameBoard.checkValidMove(row, col, dir, ship)) return;
       if (dir[0] === 1) {
         for (let i = row; i < ship.length + row; i += 1) {
           const box = document.getElementById(`${i}-${col}`);
@@ -39,31 +39,12 @@ export default function placeShipIndicator(ship, gameboard, dir) {
     });
     square.addEventListener("mouseleave", () => {
       if (selection.length > 0) {
-        selection.forEach((box) => {
-          box.style.backgroundColor = "white";
+        selection.forEach((element) => {
+          const node = element;
+          node.style.backgroundColor = "white";
         });
       }
       selection = [];
     });
-  });
-}
-
-export function placeShipListener(ship, gameBoard, dir) {
-  const squares = document.querySelectorAll(".square");
-  function innerListener(e) {
-    const coord = e.target.id.split("-");
-    const row = +coord[0];
-    const col = +coord[1];
-    const results = gameBoard.placeShip(row, col, dir, ship);
-    if (!results) {
-      console.log("train was not placed");
-      return;
-    }
-    console.log("train was placed");
-  }
-
-  squares.forEach((square) => {
-    square.removeEventListener("click", innerListener);
-    square.addEventListener("click", innerListener);
   });
 }
