@@ -1,6 +1,7 @@
 import Square from "./square";
+import Ship from "./ship";
 
-export default class Gameboard {
+export default class GameBoard {
   constructor() {
     const squareArray = [];
     for (let i = 9; i >= 0; i -= 1) {
@@ -12,12 +13,16 @@ export default class Gameboard {
       squareArray.unshift(rowArray);
     }
     this.squareArray = squareArray;
-    this.shipArray = [];
-    this.missedAttacks = 0;
-    this.previousMoves = [];
-    this.previousHits = [];
-    this.previousDir = null;
-    this.nextMove = null;
+    let maxShipSlots = 5;
+    const shipArray = [];
+    for (let i = 0; i < 4; i += 1) {
+      const ship = new Ship(maxShipSlots);
+      shipArray.push(ship);
+      maxShipSlots -= 1;
+    }
+    const ship4 = new Ship(3);
+    shipArray.splice(2, 0, ship4);
+    this.shipArray = shipArray;
   }
 
   checkValidMove(row, col, dir, ship) {
@@ -62,7 +67,6 @@ export default class Gameboard {
       x += dir[0];
       y += dir[1];
     }
-    this.shipArray.push(ship);
     return true;
   }
 

@@ -1,22 +1,12 @@
 import { createBoard, changeShipText } from "./DOMmethods";
 import placeShipIndicator from "./event_listeners";
-import Gameboard from "./gameboard";
-import Ship from "./ship";
+import GameBoard from "./gameboard";
 import startGame from "./game_loop";
 
 export default class Player {
   constructor() {
-    this.gameBoard = new Gameboard();
-    let maxShipSlots = 5;
-    const playerShipArray = [];
-    for (let i = 0; i < 4; i += 1) {
-      const ship = new Ship(maxShipSlots);
-      playerShipArray.push(ship);
-      maxShipSlots -= 1;
-    }
-    const ship4 = new Ship(3);
-    playerShipArray.splice(2, 0, ship4);
-    this.shipArray = playerShipArray;
+    this.gameBoard = new GameBoard();
+    this.shipArray = this.gameBoard.shipArray;
     this.currentShipIndex = 0;
     this.currentShip = this.shipArray[this.currentShipIndex];
     this.boundedPlaceShipListener = this.placeShipListener.bind(this);
@@ -50,6 +40,8 @@ export default class Player {
     }
     this.currentShipIndex += 1;
     if (this.currentShipIndex > this.shipArray.length - 1) {
+      const body = document.querySelector("body");
+      body.removeEventListener("keydown", this.boundedShiftDir);
       startGame(this.gameBoard);
       changeShipText("");
       return;
@@ -66,13 +58,12 @@ export default class Player {
       if (this.currentDirIndex < 0) {
         this.currentDirIndex = 3;
       }
-    }
-    if (keyCode === 39) {
+    } else if (keyCode === 39) {
       this.currentDirIndex += 1;
       if (this.currentDirIndex > 3) {
         this.currentDirIndex = 0;
       }
-    }
+    } else return;
     this.currentDir = this.possibleDir[this.currentDirIndex];
     this.buildGameBoard();
   }
@@ -82,7 +73,8 @@ export default class Player {
     createBoard("large", squareArray);
     placeShipIndicator(this.currentShip, this.gameBoard, this.currentDir);
     changeShipText(this.currentShipIndex);
-    document.onkeydown = this.boundedShiftDir;
+    const body = document.querySelector("body");
+    body.addEventListener("keydown", this.boundedShiftDir);
     const squares = document.querySelectorAll(".square");
     squares.forEach((square) => {
       square.removeEventListener("click", this.boundedPlaceShipListener);
