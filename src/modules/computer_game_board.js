@@ -72,14 +72,16 @@ export default class ComputerGameBoard extends GameBoard {
       }
       return false;
     };
+
     if (result === "Ship Sunk!") {
       this.nextMove = null;
       this.previousHits = [];
       this.currentDir = null;
       return;
     }
-    this.previousHits.push([x, y]);
+
     if (result === "Hit!" && this.previousHits.length > 1) {
+      this.previousHits.push([x, y]);
       let row = x + this.currentDir[0];
       let col = y + this.currentDir[1];
       this.nextMove = [row, col];
@@ -99,6 +101,7 @@ export default class ComputerGameBoard extends GameBoard {
       }
       return;
     }
+
     if (
       (result === "Miss!" && this.previousHits.length > 1) ||
       (result === "Invalid!" && this.previousHits.length > 1)
@@ -114,8 +117,28 @@ export default class ComputerGameBoard extends GameBoard {
         col < 0 ||
         !this.possibleMovesArray.some(filterPossibleMove)
       ) {
-        this.nextMove = null;
-        this.previousHits = [];
+        let validMove = false;
+        while (!validMove) {
+          let index = Math.floor(Math.random() * this.previousHits.length);
+          const randomPreviousHit = this.previousHits[index];
+          const possibleMoves = [];
+          for (let i = 0; i < 4; i += 1) {
+            const possibleRow = randomPreviousHit[0] + this.possibleDir[i][0];
+            const possibleCol = randomPreviousHit[1] + this.possibleDir[i][0];
+            this.nextMove = [possibleRow, possibleCol];
+            if (this.possibleMovesArray.some(filterPossibleMove)) {
+              possibleMoves.push(this.nextMove);
+            }
+          }
+          if (possibleMoves.length === 0) {
+            const moveIndex = this.previousHits.findIndex(filterPossibleMove);
+            this.previousHits.splice(moveIndex, 1);
+          } else {
+            index = Math.floor(Math.random() * this.possibleMoves.length);
+            this.nextMove = this.possibleMoves[index];
+            validMove = true;
+          }
+        }
         return;
       }
       this.currentDir = [-this.currentDir[0], -this.currentDir[1]];

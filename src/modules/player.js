@@ -71,7 +71,11 @@ export default class Player {
   buildGameBoard() {
     const { squareArray } = this.gameBoard;
     createBoard("large", squareArray);
-    placeShipIndicator(this.currentShip, this.gameBoard, this.currentDir);
+    placeShipIndicator(
+      this.currentShip.length,
+      this.gameBoard,
+      this.currentDir
+    );
     changeShipText(this.currentShipIndex);
     const body = document.querySelector("body");
     body.addEventListener("keydown", this.boundedShiftDir);

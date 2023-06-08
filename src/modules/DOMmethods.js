@@ -77,10 +77,10 @@ export function changeStatus(result) {
 export function displayWinner(playersTurn) {
   const status = document.querySelector(".status");
   const resetButton = document.querySelector(".reset");
+  resetButton.visibility = "visible";
   if (playersTurn) {
     status.textContent = "You won!";
   } else {
     status.textContent = "Computer won!";
   }
-  resetButton.visibility = "visible";
 }

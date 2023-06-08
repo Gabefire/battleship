@@ -25,32 +25,32 @@ export default class GameBoard {
     this.shipArray = shipArray;
   }
 
-  checkValidMove(row, col, dir, ship) {
+  checkValidMove(row, col, dir, shipLength) {
     if (
-      row + (ship.length - 1) * dir[0] > 9 ||
-      row + (ship.length - 1) * dir[0] < 0 ||
-      col + (ship.length - 1) * dir[1] > 9 ||
-      col + (ship.length - 1) * dir[1] < 0
+      row + (shipLength - 1) * dir[0] > 9 ||
+      row + (shipLength - 1) * dir[0] < 0 ||
+      col + (shipLength - 1) * dir[1] > 9 ||
+      col + (shipLength - 1) * dir[1] < 0
     ) {
       return false;
     }
     if (dir[0] === 1) {
-      for (let i = row; i < ship.length + row; i += 1) {
+      for (let i = row; i < shipLength + row; i += 1) {
         if (this.squareArray[i][col].shipPlaced !== null) return false;
       }
     }
     if (dir[0] === -1) {
-      for (let i = row; i > row - ship.length; i -= 1) {
+      for (let i = row; i > row - shipLength; i -= 1) {
         if (this.squareArray[i][col].shipPlaced !== null) return false;
       }
     }
     if (dir[1] === 1) {
-      for (let i = col; i < ship.length + col; i += 1) {
+      for (let i = col; i < shipLength + col; i += 1) {
         if (this.squareArray[row][i].shipPlaced !== null) return false;
       }
     }
     if (dir[1] === -1) {
-      for (let i = col; i > col - ship.length; i -= 1) {
+      for (let i = col; i > col - shipLength; i -= 1) {
         if (this.squareArray[row][i].shipPlaced !== null) return false;
       }
     }
@@ -60,7 +60,7 @@ export default class GameBoard {
   placeShip(row, col, dir, ship) {
     let x = row;
     let y = col;
-    if (!this.checkValidMove(row, col, dir, ship)) return false;
+    if (!this.checkValidMove(row, col, dir, ship.length)) return false;
     for (let i = 0; i < ship.length; i += 1) {
       const square = this.squareArray[x][y];
       square.shipPlaced = ship;
