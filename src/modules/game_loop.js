@@ -37,7 +37,11 @@ export default function startGame(playerGameBoard) {
       playersTurn = false;
       const computerCoord = computerGameBoard.getComputersTurn();
       result = playerGameBoard.receiveAttack(...computerCoord);
-      if (result === "Hit!" || computerGameBoard.previousHits.length > 0) {
+      if (
+        result === "Hit!" ||
+        computerGameBoard.previousHits.length > 0 ||
+        computerGameBoard.nextMove !== null
+      ) {
         computerGameBoard.computerAdjacentSquare(...computerCoord, result);
       }
       updateSquare("small", ...computerCoord, result);

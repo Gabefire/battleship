@@ -50,7 +50,7 @@ export default class ComputerGameBoard extends GameBoard {
       }
       return false;
     };
-    if (this.nextMove !== null) {
+    if (this.nextMove !== null && this.possibleMovesArray.length > 0) {
       const moveIndex = this.possibleMovesArray.findIndex(filterPossibleMove);
       const [move] = this.possibleMovesArray.splice(moveIndex, 1);
       return move;
@@ -72,7 +72,10 @@ export default class ComputerGameBoard extends GameBoard {
       return false;
     };
 
-    if (result === "Ship Sunk!") {
+    if (
+      result === "Ship Sunk!" ||
+      (this.nextMove !== null && this.previousHits.length === 0)
+    ) {
       this.nextMove = null;
       this.previousHits = [];
       this.currentDir = null;
@@ -136,42 +139,16 @@ export default class ComputerGameBoard extends GameBoard {
           col < 0 ||
           !this.possibleMovesArray.some(filterPossibleMove)
         ) {
-          let validMove = false;
-          while (!validMove) {
-            let index = Math.floor(Math.random() * this.previousHits.length);
-            const randomPreviousHit = this.previousHits[index];
-            const possibleMoves = [];
-            for (let i = 0; i < 4; i += 1) {
-              const possibleRow = randomPreviousHit[0] + this.possibleDir[i][0];
-              const possibleCol = randomPreviousHit[1] + this.possibleDir[i][1];
-              this.nextMove = [possibleRow, possibleCol];
-              if (this.possibleMovesArray.some(filterPossibleMove)) {
-                possibleMoves.push([this.nextMove, this.possibleDir[i]]);
-              }
-            }
-            if (possibleMoves.length === 0) {
-              const moveIndex = this.previousHits.findIndex(filterPossibleMove);
-              this.previousHits.splice(moveIndex, 1);
-            } else {
-              index = Math.floor(Math.random() * possibleMoves.length);
-              const coord = possibleMoves[index][0];
-              const dir = possibleMoves[index][1];
-              this.nextMove = coord;
-              this.currentDir = dir;
-              validMove = true;
-            }
-          }
-          return;
+          this.nextMove = null;
+          this.previousHits = [];
+          this.currentDir = null;
         }
         return;
       }
       return;
     }
 
-    if (
-      (result === "Miss!" && this.previousHits.length > 0) ||
-      (result === "Invalid!" && this.previousHits.length > 0)
-    ) {
+    if (result === "Miss!" || result === "Invalid!") {
       const coords = this.previousHits[0];
       const row = coords[0] - this.currentDir[0];
       const col = coords[1] - this.currentDir[1];
