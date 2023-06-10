@@ -1,4 +1,4 @@
-import css from "./index.css";
+import "./index.css";
 import Player from "./modules/player";
 
 const player = new Player();
