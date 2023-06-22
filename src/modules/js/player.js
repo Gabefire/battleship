@@ -1,7 +1,7 @@
 import { createBoard, changeShipText } from "./DOMmethods";
 import placeShipIndicator from "./event_listeners";
 import GameBoard from "./gameboard";
-import startGame from "./game_loop";
+import startGame from "../game_loop";
 
 export default class Player {
   constructor() {
