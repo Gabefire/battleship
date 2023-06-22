@@ -1,13 +1,13 @@
 import GameBoard from "./game-board";
 import Ship from "./ship";
 import { changeShipText, createBoard } from "./DOM-methods";
+import startGame from "./game_loop";
 
 interface Player {
   currentShipIndex: number;
   currentShip: Ship;
   boundedPlaceShipListener: EventListenerOrEventListenerObject;
   boundedShiftDir: EventListenerOrEventListenerObject;
-  possibleDir: number[][];
   currentDirIndex: number;
   currentDir: number[];
 }
@@ -19,16 +19,6 @@ class Player extends GameBoard {
     this.currentShip = this.shipArray[this.currentShipIndex];
     this.boundedPlaceShipListener = this.placeShipListener.bind(this);
     this.boundedShiftDir = this.shiftDirListener.bind(this);
-    this.possibleDir = [
-      // right
-      [0, 1],
-      // up
-      [1, 0],
-      // left
-      [0, -1],
-      // down
-      [-1, 0],
-    ];
     this.currentDirIndex = 0;
     this.currentDir = this.possibleDir[this.currentDirIndex];
   }

@@ -4,6 +4,7 @@ import Ship from "./ship";
 interface GameBoard {
   squareArray: Square[][];
   shipArray: Ship[];
+  possibleDir: number[][];
 }
 
 class GameBoard {
@@ -28,6 +29,16 @@ class GameBoard {
     const ship4 = new Ship(3);
     shipArray.splice(2, 0, ship4);
     this.shipArray = shipArray;
+    this.possibleDir = [
+      // right
+      [0, 1],
+      // up
+      [1, 0],
+      // left
+      [0, -1],
+      // down
+      [-1, 0],
+    ];
   }
 
   // checks if move will put ship outside board or if there is a ship in place
