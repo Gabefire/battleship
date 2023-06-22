@@ -1,5 +1,5 @@
-import ComputerGameBoard from "../src/modules/computer_game_board";
-import GameBoard from "../src/modules/gameboard";
+import ComputerGameBoard from "../src/modules/computer-game-board";
+import GameBoard from "../src/modules/game-board";
 import Ship from "../src/modules/ship";
 
 it("Get computer turn", () => {

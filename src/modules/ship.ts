@@ -5,7 +5,7 @@ interface Ship {
 }
 
 class Ship {
-  constructor(length) {
+  constructor(length: number) {
     this.length = length;
     this.numHits = 0;
     this.sunk = false;

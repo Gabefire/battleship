@@ -1,7 +1,7 @@
 import GameBoard from "./game-board";
 import Ship from "./ship";
 import { changeShipText, createBoard } from "./DOM-methods";
-import startGame from "./game_loop";
+import startGame from "./game-loop";
 
 interface Player {
   currentShipIndex: number;
@@ -117,13 +117,13 @@ class Player extends GameBoard {
   }
 
   shiftDirListener(e: KeyboardEvent) {
-    const keyCode: number = +e.key;
-    if (keyCode === 37) {
+    const keyCode: string = e.key;
+    if (keyCode === "ArrowLeft") {
       this.currentDirIndex -= 1;
       if (this.currentDirIndex < 0) {
         this.currentDirIndex = 3;
       }
-    } else if (keyCode === 39) {
+    } else if (keyCode === "ArrowRight") {
       this.currentDirIndex += 1;
       if (this.currentDirIndex > 3) {
         this.currentDirIndex = 0;

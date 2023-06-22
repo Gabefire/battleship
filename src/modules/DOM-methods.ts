@@ -89,7 +89,7 @@ export function changeStatus(result: string) {
   status.textContent = result;
 }
 
-export function displayWinner(playersTurn) {
+export function displayWinner(playersTurn: boolean) {
   const status = document.querySelector(".status") as HTMLElement;
   const resetButton = document.querySelector(".reset") as HTMLButtonElement;
   resetButton.style.visibility = "visible";

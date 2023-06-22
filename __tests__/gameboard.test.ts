@@ -1,4 +1,4 @@
-import GameBoard from "../src/modules/gameboard";
+import GameBoard from "../src/modules/game-board";
 import Ship from "../src/modules/ship";
 
 it("hit square", () => {});
