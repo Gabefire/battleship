@@ -10,17 +10,18 @@ import Player from "./player-game-board";
 export default function startGame(playerGameBoard: Player) {
   const computerGameBoard = new ComputerGameBoard();
   computerGameBoard.buildComputerGameBoard();
-  createBoard("large", computerGameBoard.squareArray, false);
-  createBoard("small", playerGameBoard.squareArray);
+  createBoard("large", computerGameBoard.squareArray, false, true);
+  createBoard("small", playerGameBoard.squareArray, true, false);
   let gameOver = false;
   let playersTurn = true;
-  const squares = document.querySelectorAll(".square");
+  const squares = document.querySelectorAll(".square-computer");
   squares.forEach((square) => {
     square.addEventListener("click", (e) => {
       if (gameOver) {
         return;
       }
       const coord = (e.target as HTMLDivElement).id.split("-");
+      console.log(coord);
       const row = +coord[1];
       const col = +coord[2];
       let result = computerGameBoard.receiveAttack(row, col);
@@ -28,7 +29,7 @@ export default function startGame(playerGameBoard: Player) {
         changeStatus(result);
         return;
       }
-      updateSquare("large", row, col, result);
+      updateSquare("large", row, col, result, "computer");
       changeStatus(result);
       gameOver = computerGameBoard.checkResults();
       if (gameOver) {
@@ -52,7 +53,7 @@ export default function startGame(playerGameBoard: Player) {
           result
         );
       }
-      updateSquare("small", computerCoord[0], computerCoord[1], result);
+      updateSquare("small", computerCoord[0], computerCoord[1], result, "");
       gameOver = playerGameBoard.checkResults();
       if (gameOver) {
         displayWinner(playersTurn);

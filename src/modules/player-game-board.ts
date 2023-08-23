@@ -134,7 +134,7 @@ class Player extends GameBoard {
   }
 
   buildGameBoard() {
-    createBoard("large", this.squareArray);
+    createBoard("large", this.squareArray, true, false);
     this.placeShipIndicator(this.currentShip.length, this.currentDir);
     changeShipText(this.currentShipIndex);
     const body = document.querySelector("body");

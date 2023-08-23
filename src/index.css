@@ -65,7 +65,8 @@ h1 {
   margin-bottom: 2px;
 }
 
-.square {
+.square,
+.square-computer {
   height: 100%;
   width: 100%;
   flex: 1;

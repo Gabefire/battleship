@@ -3,7 +3,8 @@ import Square from "./square";
 export function createBoard(
   size: string,
   squareArray: Square[][],
-  displayShip: boolean = true
+  displayShip: boolean = true,
+  haveId: boolean = false
 ): void {
   const grid = document.querySelector(`#${size}-grid`) as HTMLDivElement;
   const sideBar = document.querySelector(".side-bar") as HTMLDivElement;
@@ -20,8 +21,14 @@ export function createBoard(
 
     for (let x = 0; x < 10; x += 1) {
       const div = document.createElement("div") as HTMLDivElement;
-      div.id = `${size}-${i}-${x}`;
-      div.className = "square";
+
+      if (haveId) {
+        div.className = "square-computer";
+        div.id = `computer${size}-${i}-${x}`;
+      } else {
+        div.className = "square";
+        div.id = `${size}-${i}-${x}`;
+      }
       row.appendChild(div);
       const square = squareArray[i][x];
       if (square.shipPlaced !== null && square.hit === true) {
@@ -45,10 +52,11 @@ export function updateSquare(
   size: string,
   row: number,
   col: number,
-  result: string
+  result: string,
+  player: string
 ): void {
   const currentSquare = document.getElementById(
-    `${size}-${row}-${col}`
+    `${player}${size}-${row}-${col}`
   ) as HTMLElement;
   if (result === "Hit!" || result === "Ship Sunk!") {
     currentSquare.style.backgroundColor = "red";
